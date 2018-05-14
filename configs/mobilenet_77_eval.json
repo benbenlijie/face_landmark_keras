@@ -1,0 +1,32 @@
+{
+  "exp_name": "face_landmark_mobilenet",
+  "num_epochs": 500,
+  "learning_rate": 0.01,
+  "optimizer": "adam",
+  "batch_size": 16,
+  "validation_split":0.25,
+  "verbose_training": true,
+  "checkpoint_monitor": "val_nme",
+  "checkpoint_mode": "min",
+  "checkpoint_save_best_only": true,
+  "checkpoint_save_weights_only": true,
+  "checkpoint_verbose": true,
+  "tensorboard_write_graph": true,
+
+  "best_checkpoint": "experiments/2018-05-11/face_landmark_mobile_net_77/checkpoints/face_landmark_mobile_net_77-308-0.05948.hdf5",
+
+  "input_width": 224,
+  "input_height": 224,
+  "margin": [-0.15, -0.10, 0.15, 0.25],
+  "num_output": 154,
+  "model_name": "mobile_net",
+  "data_set": "face_data_77",
+
+  "data_file_train": "/home/ubuntu/face_detect/face_data_77/train/train.txt",
+  "image_folder_train": "/home/ubuntu/face_detect/face_data_77/images",
+  "annotation_folder_train": "/home/ubuntu/face_detect/face_data_77/annotations",
+
+  "data_file_test": "/home/ubuntu/face_detect/face_data_77/val/val.txt",
+  "image_folder_test": "/home/ubuntu/face_detect/face_data_77/images",
+  "annotation_folder_test": "/home/ubuntu/face_detect/face_data_77/annotations"
+}

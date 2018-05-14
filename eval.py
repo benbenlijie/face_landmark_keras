@@ -1,11 +1,12 @@
 from data_loader.simple_mnist_data_loader import SimpleMnistDataLoader
 from models.simple_mnist_model import SimpleMnistModel
-from trainers.simple_mnist_trainer import SimpleMnistModelTrainer
+from data_loader.face_landmark_77_data_loader import FaceLandmark77DataLoader
+from models.mobilenet_v2_model import MobileNetV2Model
+from evaluater.face_landmark_evaluater import FaceLandmarkEvaluater
 from utils.config import process_config
 from utils.dirs import create_dirs
 from utils.utils import get_args
-import cv2
-import numpy as np
+
 
 def main():
     # capture the config path from the run arguments
@@ -21,38 +22,28 @@ def main():
     create_dirs([config.tensorboard_log_dir, config.checkpoint_dir, "val_test"])
 
     print('Create the data generator.')
-    data_loader = SimpleMnistDataLoader(config)
+    if hasattr(config, "data_set"):
+        if config.data_set == "face_data_77":
+            data_loader = FaceLandmark77DataLoader(config)
+        else:
+            data_loader = SimpleMnistDataLoader(config)
+    else:
+        data_loader = SimpleMnistDataLoader(config)
 
     print('Create the model.')
-    model = SimpleMnistModel(config)
-
-    if hasattr(config, "best_checkpoint"):
-        model.load(config.best_checkpoint)
+    if hasattr(config, "model_name"):
+        if config.model_name == "mobile_net":
+            model = MobileNetV2Model(config)
+        else:
+            model = SimpleMnistModel(config)
     else:
-        print("Do you forget to set the 'best_checkpoint' in config file")
-        return
-    eval_data = data_loader.data_generator(False)
-    X, Y_true = next(eval_data)
-    Y_pred = model.model.predict_on_batch(X)
-    for i in range(len(X)):
-        x = (X[i] + 1.) * 128.
-        img = cv2.cvtColor(x, cv2.COLOR_RGB2BGR)
-        y_pred = (Y_pred[i] + 1.) / 2. * config.input_width
-        y_true = (Y_true[i] + 1.) / 2. * config.input_width
-        y_pred = np.reshape(y_pred, (len(y_pred) // 2, 2))
-        y_true = np.reshape(y_true, (len(y_true) // 2, 2))
+        model = SimpleMnistModel(config)
 
-        for j in range(len(y_pred)):
-            cv2.circle(img, tuple(y_pred[j]), 2, (255, 0, 0), 2)
-        cv2.imwrite("val_test/val_pred_{:03d}.jpg".format(i+1), img)
-        for j in range(len(y_pred)):
-            cv2.circle(img, tuple(y_true[j]), 2, (0, 255, 0), 2)
-        cv2.imwrite("val_test/val_test_{:03d}.jpg".format(i + 1), img)
-    # predict = model.model.predict_generator(
-    #     data_loader.data_generator(False),
-    #     steps=data_loader.get_steps(False),
-    #     workers=4)
-    # print(predict.shape)
+    print("Create the Evaluater.")
+    evaluator = FaceLandmarkEvaluater(model, data_loader, config)
+
+    print("Start evaluate.")
+    evaluator.evaluate()
 
 
 if __name__ == '__main__':
