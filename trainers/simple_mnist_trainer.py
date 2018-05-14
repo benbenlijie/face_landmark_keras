@@ -61,9 +61,9 @@ class SimpleMnistModelTrainer(BaseTrain):
         )
 
         self.loss.extend(history.history['loss'])
-        self.acc.extend(history.history['acc'])
+        self.acc.extend(history.history['nme'])
         self.val_loss.extend(history.history['val_loss'])
-        self.val_acc.extend(history.history['val_acc'])
+        self.val_acc.extend(history.history['val_nme'])
 
     def lr_scheduler(self, epoch):
         total_epoch = self.config.num_epochs
