@@ -41,6 +41,10 @@ def main():
     else:
         model = SimpleMnistModel(config)
 
+    print(model.model.input_names)
+    print([out.op.name for out in model.model.outputs])
+    return
+
     if hasattr(config, "best_checkpoint"):
         model.load(config.best_checkpoint)
         frozen_graph = freeze_session(K.get_session(),

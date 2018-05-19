@@ -22,7 +22,8 @@
   "model_name": "mobile_net",
   "data_set": "face_data_77",
 
-  "test_image": "/home/ubuntu/face_detect/face_data_77/resized_img.jpg",
+
+  "_test_image": "/home/ubuntu/face_detect/face_data_77/test_origin.jpg",
 
   "data_file_train": "/home/ubuntu/face_detect/face_data_77/train/train.txt",
   "image_folder_train": "/home/ubuntu/face_detect/face_data_77/images",
